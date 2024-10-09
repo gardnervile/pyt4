@@ -1,42 +1,25 @@
 from PIL import Image
 
 image_rgb = Image.open("monro.jpg")
-red, greem, blue = image_rgb.split()
+red, green, blue = image_rgb.split()
 
-image = Image.open("red.jpg")
-coordinates = (100, 0, image.width, image.height)
-cropped_image = image.crop(coordinates) 
+coordinates = (100, 0, red.width, red.height)
+cropped_image = red.crop(coordinates) 
+coordinates = (50, 0 ,red.width - 50, red.height)
+middle_image = red.crop(coordinates) 
+blended_image = Image.blend(cropped_image, middle_image, 0.5)
 
-image = Image.open("red.jpg")
-coordinates = (50,0 ,image.width - 50, image.height)
-middle_image = image.crop(coordinates) 
+coordinates = (0, 0, blue.width - 100, blue.height)
+right_blue = blue.crop(coordinates)
+coordinates = (50, 0, blue.width - 50, blue.height)
+mid_blue = blue.crop(coordinates)
+blended_blue = Image.blend(right_blue, mid_blue, 0.5)
 
-image1 = Image.open("cropped_image.jpg")
-image2 = Image.open("middle_image.jpg")
-blended_image = Image.blend(image1, image2, 0.5)
+coordinates = (50, 0, green.width - 50, green.height)
+cropped_green = green.crop(coordinates)
 
-image = Image.open("blue.jpg")
-coordinates = (0, 0, image.width - 100, image.height)
-right_blue = image.crop(coordinates)
+merged = Image.merge("RGB", (blended_image, cropped_green, blended_blue))
 
-image = Image.open("blue.jpg")
-coordinates = (50, 0, image.width - 50, image.height)
-mid_blue = image.crop(coordinates)
-
-image1 = Image.open("right_blue.jpg")
-image2 = Image.open("mid_blue.jpg")
-blended_blue = Image.blend(image1, image2, 0.5)
-
-image = Image.open("green.jpg")
-coordinates = (50, 0, image.width - 50, image.height)
-cropped_green = image.crop(coordinates)
-
-r = Image.open("blended_image.jpg")
-g = Image.open("cropped_green.jpg")
-b = Image.open("blended_blue.jpg")
-merged = Image.merge("RGB", (r, g, b))
-
-image = Image.open("merged.jpg")
 new_size = (80, 70)
-avatar = image.resize(new_size)
+avatar = merged.resize(new_size)
 avatar.save("avatar.jpg")
